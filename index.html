@@ -21,6 +21,7 @@
         --container-bg: rgba(250, 250, 250, 0.95); /* 淺色容器背景 */
         --active-toggle-color: #28a745; /* 綠色，表示「是」 */
         --inactive-toggle-color: #dc3545; /* 紅色，表示「否」 */
+        --cloud-color: #17a2b8; /* 新增雲端色系 */
     }
 
     body {
@@ -50,6 +51,19 @@
         padding-bottom: 15px;
         margin-bottom: 30px;
     }
+
+        /* 雲端區塊專屬樣式 */
+        .cloud-panel {
+            background: #f0faff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--cloud-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
     button {
         background-color: var(--primary-color);
@@ -301,6 +315,14 @@
     <h1>⏰ 時間計算與管理</h1>
     <div id="current-time-display">載入中...</div>
 
+    <div class="section-title" style="border-left-color: var(--cloud-color);">☁️ 雲端同步設定</div>
+    <div class="cloud-panel">
+        <label for="user-id-input" style="font-weight: bold;">使用者 ID:</label>
+        <input type="text" id="user-id-input" placeholder="輸入專屬 ID 進行同步">
+        <button onclick="loadFromCloud()" style="background-color: var(--cloud-color);">讀取雲端資料</button>
+        <button onclick="uploadToCloud()" style="background-color: var(--active-toggle-color);">儲存目前列表至雲端</button>
+    </div>
+
     <div class="section-title">⏱️ 計算器</div>
     
     <div id="excel-file-name-container">
@@ -351,7 +373,7 @@
             <th style="width: 15%;">屬性</th> 
             <th style="width: 10%;">是否邀請</th> 
             <th onclick="sortTable(4)" style="width: 20%;">計算後時間 🕒</th>
-            <th style="width: 20%;">時間差 ⏳</th> 
+            <th style="width: 20%;">剩餘時間 ⏳</th> 
             <th style="width: 10%;">操作</th> 
         </tr>
     </thead>
@@ -368,10 +390,45 @@
 </div>
 
 <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzBgl-VFYh-a-534FymV_NuqKcJvupEtFZoT7sDf9a7nKTsJpbiC4e4196tMGyZUpLgHw/exec";
     let storedTimes = []; 
     let currentSortDirection = 'asc'; 
     let editingId = null; 
     let currentInvitationStatus = false; 
+
+    // --- 雲端同步函式 ---
+    async function uploadToCloud() {
+        const userID = document.getElementById('user-id-input').value.trim();
+        if (!userID) return alert("請輸入使用者 ID 才能儲存到雲端！");
+        const btn = event.target;
+        btn.textContent = "上傳中...";
+        try {
+            await fetch(GAS_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "saveAll", userID: userID, data: storedTimes })
+            });
+            alert("雲端同步成功！資料已儲存至 ID: " + userID);
+        } catch (e) { alert("同步失敗，請確認網路或 GAS 設定。"); }
+        btn.textContent = "儲存目前列表至雲端";
+    }
+
+    async function loadFromCloud() {
+        const userID = document.getElementById('user-id-input').value.trim();
+        if (!userID) return alert("請輸入使用者 ID 才能讀取資料！");
+        const btn = event.target;
+        btn.textContent = "讀取中...";
+        try {
+            const response = await fetch(GAS_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "loadAll", userID: userID })
+            });
+            const cloudData = await response.json();
+            storedTimes = cloudData.map(item => ({ ...item, time: new Date(item.time) }));
+            renderTable();
+            alert("已從雲端載入 ID: " + userID + " 的資料！");
+        } catch (e) { alert("讀取失敗，查無資料或權限問題。"); }
+        btn.textContent = "讀取雲端資料";
+    }
 
     // --- 時間格式化與核心時間差計算 ---
     
@@ -806,62 +863,6 @@
     }
 
 
-    // --- PWA 註冊與推播通知邏輯 (保持不變) ---
-    function requestNotificationPermission(registration) {
-        if ('Notification' in window) {
-            Notification.requestPermission().then(permission => {
-                console.log('通知權限狀態:', permission);
-                if (permission === 'granted') {
-                    subscribeUserToPush(registration);
-                }
-            });
-        }
-    }
-
-    function subscribeUserToPush(registration) {
-        const applicationServerKey = 'YOUR_VAPID_PUBLIC_KEY_HERE'; 
-        
-        const subscribeOptions = {
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(applicationServerKey)
-        };
-
-        registration.pushManager.subscribe(subscribeOptions)
-            .then(function(subscription) {
-                console.log('推播訂閱成功，請將以下物件發送到您的後端伺服器儲存:', subscription);
-            })
-            .catch(function(error) {
-                console.error('推播訂閱失敗:', error);
-            });
-    }
-
-    function urlBase64ToUint8Array(base64String) {
-        const padding = '='.repeat((4 - base64String.length % 4) % 4);
-        const base64 = (base64String + padding)
-            .replace(/\-/g, '+')
-            .replace(/_/g, '/');
-
-        const rawData = window.atob(base64);
-        const outputArray = new Uint8Array(rawData.length);
-
-        for (let i = 0; i < rawData.length; ++i) {
-            outputArray[i] = rawData.charCodeAt(i);
-        }
-        return outputArray;
-    }
-
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then(registration => {
-                    console.log('Service Worker 註冊成功:', registration);
-                    requestNotificationPermission(registration);
-                })
-                .catch(error => {
-                    console.error('Service Worker 註冊失敗:', error);
-                });
-        });
-    }
 
     document.addEventListener('DOMContentLoaded', () => {
         clearInputs();
