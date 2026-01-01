@@ -319,8 +319,8 @@
     <div class="cloud-panel">
         <label for="user-id-input" style="font-weight: bold;">使用者 ID:</label>
         <input type="text" id="user-id-input" placeholder="輸入專屬 ID 進行同步">
-        <button onclick="loadFromCloud()" style="background-color: var(--cloud-color);">讀取雲端資料</button>
-        <button onclick="uploadToCloud()" style="background-color: var(--active-toggle-color);">儲存目前列表至雲端</button>
+        <button onclick="loadFromCloud(event)" style="background-color: var(--cloud-color);">讀取雲端資料</button>
+        <button onclick="uploadToCloud(event)" style="background-color: var(--active-toggle-color);">儲存目前列表至雲端</button>
     </div>
 
     <div class="section-title">⏱️ 計算器</div>
@@ -397,10 +397,12 @@
     let currentInvitationStatus = false; 
 
     // --- 雲端同步函式 ---
-    async function uploadToCloud() {
+    async function uploadToCloud(e) {
         const userID = document.getElementById('user-id-input').value.trim();
         if (!userID) return alert("請輸入使用者 ID 才能儲存到雲端！");
-        const btn = event.target;
+        const btn = e.target;
+	const originalText = btn.textContent;
+    
         btn.textContent = "上傳中...";
         try {
             await fetch(GAS_URL, {
@@ -412,10 +414,12 @@
         btn.textContent = "儲存目前列表至雲端";
     }
 
-    async function loadFromCloud() {
+    async function loadFromCloud(e) {
         const userID = document.getElementById('user-id-input').value.trim();
         if (!userID) return alert("請輸入使用者 ID 才能讀取資料！");
-        const btn = event.target;
+        const btn = e.target;
+	const originalText = btn.textContent;
+    
         btn.textContent = "讀取中...";
         try {
             const response = await fetch(GAS_URL, {
@@ -423,11 +427,31 @@
                 body: JSON.stringify({ action: "loadAll", userID: userID })
             });
             const cloudData = await response.json();
-            storedTimes = cloudData.map(item => ({ ...item, time: new Date(item.time) }));
+
+            storedTimes = cloudData.map(item => {
+                // --- 修正邏輯開始 ---
+                // 1. 直接嘗試解析原始字串 (Date 建構子能處理 ISO 8601 格式如 "2026-01-02T08:22:58.000Z")
+                let parsedDate = new Date(item.timeString);
+
+                // 2. 如果解析失敗 (例如某些瀏覽器對特定格式不友善)，再進行字串處理
+                if (isNaN(parsedDate)) {
+                    let safeTimeString = item.timeString.replace(/-/g, '/').replace('T', ' ').replace(/\..+/, '');
+                    parsedDate = new Date(safeTimeString);
+                }
+                
+                return {
+                    ...item,
+                    time: parsedDate,
+                    // 關鍵：確保匯入後的 timeString 格式統一為 YYYY-MM-DD HH:MM:SS
+                    timeString: formatTime(parsedDate) 
+                };
+                // --- 修正邏輯結束 ---
+            });
             renderTable();
             alert("已從雲端載入 ID: " + userID + " 的資料！");
         } catch (e) { alert("讀取失敗，查無資料或權限問題。"); }
         btn.textContent = "讀取雲端資料";
+	
     }
 
     // --- 時間格式化與核心時間差計算 ---
