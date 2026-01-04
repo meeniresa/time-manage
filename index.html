@@ -10,18 +10,17 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-    /* 1. 顏色調整: 黑色背景 -> 白色，白色文字 -> 深咖啡色 */
     :root {
         --primary-color: #C71585; 
         --secondary-color: #8A2BE2; 
-        --text-color: #4B3832; /* 深咖啡色 */
-        --background-color: #FFFFFF; /* 白色背景 */
-        --input-bg: #F5F5F5; /* 淺色輸入背景 */
+        --text-color: #4B3832; 
+        --background-color: #FFFFFF; 
+        --input-bg: #F5F5F5; 
         --font-family: '微軟正黑體', 'Microsoft JhengHei', Arial, sans-serif;
-        --container-bg: rgba(250, 250, 250, 0.95); /* 淺色容器背景 */
-        --active-toggle-color: #28a745; /* 綠色，表示「是」 */
-        --inactive-toggle-color: #dc3545; /* 紅色，表示「否」 */
-        --cloud-color: #17a2b8; /* 新增雲端色系 */
+        --container-bg: rgba(250, 250, 250, 0.95); 
+        --active-toggle-color: #28a745; 
+        --inactive-toggle-color: #dc3545; 
+        --cloud-color: #17a2b8; 
     }
 
     body {
@@ -37,11 +36,11 @@
 
     .container {
         width: 100%;
-        max-width: 1200px; 
+        max-width: 1300px; 
         padding: 30px;
         border-radius: 10px;
         background-color: var(--container-bg);
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 調整陰影以適應淺色背景 */
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
@@ -52,22 +51,21 @@
         margin-bottom: 30px;
     }
 
-        /* 雲端區塊專屬樣式 */
-        .cloud-panel {
-            background: #f0faff;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--cloud-color);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+    .cloud-panel {
+        background: #f0faff;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--cloud-color);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
 
     button {
         background-color: var(--primary-color);
-        color: #FFFFFF; /* 按鈕文字保持白色以增加對比 */
+        color: #FFFFFF;
         border: none;
         padding: 10px 20px;
         margin: 5px;
@@ -83,40 +81,12 @@
         transform: translateY(-1px);
     }
     
-    .delete-btn {
-        background-color: #a30000; 
-        padding: 5px 10px;
-        font-size: 14px;
-        /* 保持在表格內，並縮小 margin */
-        margin: 2px 1px; 
-    }
-
-    .delete-btn:hover {
-        background-color: #d10000;
-    }
-    
-    .edit-btn, .save-edit-btn {
-        background-color: #007bff; 
-        padding: 5px 10px;
-        font-size: 14px;
-        /* 保持在表格內，並縮小 margin */
-        margin: 2px 1px;
-    }
-    
-    /* 新增取消按鈕樣式 */
-    .cancel-edit-btn {
-        background-color: #555;
-        padding: 5px 10px;
-        font-size: 14px;
-        margin: 2px 1px;
-    }
-    .cancel-edit-btn:hover {
-        background-color: #333;
-    }
-
-    .edit-btn:hover, .save-edit-btn:hover {
-        background-color: #0056b3;
-    }
+    .delete-btn { background-color: #a30000; padding: 5px 10px; font-size: 14px; margin: 2px 1px; }
+    .delete-btn:hover { background-color: #d10000; }
+    .edit-btn, .save-edit-btn { background-color: #007bff; padding: 5px 10px; font-size: 14px; margin: 2px 1px; }
+    .cancel-edit-btn { background-color: #555; padding: 5px 10px; font-size: 14px; margin: 2px 1px; }
+    .cancel-edit-btn:hover { background-color: #333; }
+    .edit-btn:hover, .save-edit-btn:hover { background-color: #0056b3; }
 
     .section-title {
         color: var(--secondary-color);
@@ -142,12 +112,11 @@
         flex-wrap: wrap; 
     }
 
-    #save-name, #save-attribute {
+    #save-name, #save-attribute, #save-coordinate {
         flex-grow: 1;
-        min-width: 150px;
+        min-width: 120px;
     }
     
-    /* 是否邀請按鈕樣式 (計算器上方) */
     .invitation-toggle-group {
         display: flex;
         align-items: center;
@@ -175,21 +144,14 @@
         color: #FFFFFF;
     }
     
-    .invitation-toggle.is-active-yes, .invitation-toggle-table.is-active-yes {
-        background-color: var(--active-toggle-color);
-    }
-    .invitation-toggle.is-active-no, .invitation-toggle-table.is-active-no {
-        background-color: var(--inactive-toggle-color);
-    }
+    .invitation-toggle.is-active-yes, .invitation-toggle-table.is-active-yes { background-color: var(--active-toggle-color); }
+    .invitation-toggle.is-active-no, .invitation-toggle-table.is-active-no { background-color: var(--inactive-toggle-color); }
     .invitation-toggle:not(.is-active-yes):not(.is-active-no), 
-    .invitation-toggle-table:not(.is-active-yes):not(.is-active-no) {
-        background-color: #ccc;
-        color: #000;
-    }
+    .invitation-toggle-table:not(.is-active-yes):not(.is-active-no) { background-color: #ccc; color: #000; }
 
     .time-input-container input,
     .control-panel select,
-    #save-name, #save-attribute,
+    #save-name, #save-attribute, #save-coordinate,
     #stored-times-table input[type="text"],
     #excel-file-name { 
         background-color: var(--input-bg);
@@ -201,13 +163,6 @@
         box-sizing: border-box;
     }
 
-    /* 確保表格中的純文字輸入框寬度適中 */
-    #stored-times-table input[type="text"],
-    #stored-times-table input[type="text-time"] {
-        padding: 4px;
-        font-size: 14px;
-    }
-    
     .time-input-container {
         display: flex;
         gap: 15px;
@@ -233,22 +188,6 @@
         margin-bottom: 20px;
         flex-wrap: wrap;
     }
-    .control-panel > * {
-        margin: 5px 0;
-    }
-
-    /* 檔案名稱輸入欄位樣式 */
-    #excel-file-name-container {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 15px;
-        flex-wrap: wrap;
-    }
-    #excel-file-name {
-        flex-grow: 1;
-        min-width: 200px;
-    }
 
     #stored-times-table {
         width: 100%;
@@ -257,8 +196,7 @@
         table-layout: fixed; 
     }
 
-    #stored-times-table th,
-    #stored-times-table td {
+    #stored-times-table th, #stored-times-table td {
         border: 1px solid #ddd; 
         padding: 10px;
         text-align: left;
@@ -271,16 +209,26 @@
         background-color: var(--secondary-color);
         color: #FFFFFF; 
         cursor: pointer;
-        position: sticky;
-        top: 0;
     }
     
-    /* 表格內的操作欄位置中 */
-    #stored-times-table td:last-child {
-        text-align: center;
-    }
-    
-    /* 讓計算結果的文字顏色更明顯 */
+#batch-delete-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+#batch-delete-btn:hover {
+    background-color: #a71d2a;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+
     #result-display {
         font-size: 1.1em;
         font-weight: bold;
@@ -293,20 +241,40 @@
         border-radius: 4px;
     }
 
-    /* 調整表格欄寬以適應新增的時間差欄位 */
-    #stored-times-table thead tr th:nth-child(4) { width: 10%; } /* 是否邀請 */
-    #stored-times-table thead tr th:nth-child(5) { width: 20%; } /* 計算後時間 */
-    #stored-times-table thead tr th:nth-child(6) { width: 20%; } /* 時間差 */
-    #stored-times-table thead tr th:nth-child(7) { width: 15%; } /* 操作 */
+        /* 4x4 矩陣樣式 */
+        .task-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(4, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+            background: #f8f9fa;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        .grid-header { background: #6c757d; color: white; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; }
+        .row-label { display: flex; align-items: center; justify-content: center; background: #e9ecef; border-radius: 4px; font-weight: bold; }
+        .cell { background: white; border: 1px solid #ced4da; padding: 10px; border-radius: 4px; font-size: 0.9em; text-align: center; }
+        .cell input { margin-top: 5px; width: 45px; padding: 3px; text-align: center; border: 1px solid var(--secondary-color); border-radius: 4px; }
 
-    /* 調整表格內「是否邀請」的按鈕樣式，確保其不會太寬 */
-    #stored-times-table .invitation-toggle-table {
-        padding: 5px 8px; /* 縮小填充 */
-        font-size: 13px; /* 縮小字體 */
-        margin: 0 auto; /* 置中 */
-        /* 移除 display: block; 讓按鈕寬度跟隨內容 */
-        display: inline-block; 
-    }
+        /* 表格樣式 */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; word-wrap: break-word; }
+        th { background: var(--secondary-color); color: white; cursor: pointer; white-space: nowrap; }
+
+
+    /* 調整欄寬以容納新欄位 */
+#stored-times-table th:nth-child(1) { width: 35px; }  /* 勾選框 */
+#stored-times-table th:nth-child(2) { width: 40px; }  /* 編號 */
+#stored-times-table th:nth-child(3) { width: 15%; }  /* 名稱 */
+#stored-times-table th:nth-child(4) { width: 7%; }  /* 屬性 */
+#stored-times-table th:nth-child(5) { width: 12%; }  /* 座標 */
+#stored-times-table th:nth-child(6) { width: 70px; }  /* 邀請 */
+#stored-times-table th:nth-child(7) { width: 170px; } /* 計算後時間 (建議給固定寬度避免折行) */
+#stored-times-table th:nth-child(8) { width: 100px; } /* 剩餘時間 */
+#stored-times-table th:nth-child(9) { width: 60px; } /* 任務階段 */
+#stored-times-table th:nth-child(10) { width: 110px; } /* 操作 */
+
 </style>
 </head>
 <body>
@@ -352,11 +320,12 @@
 
     <div class="section-title">💾 儲存計算結果</div>
     <div class="save-section">
-        <input type="text" id="save-name" placeholder="輸入儲存名稱">
+        <input type="text" id="save-name" placeholder="輸入名稱">
         <input type="text" id="save-attribute" placeholder="輸入屬性">
+        <input type="text" id="save-coordinate" placeholder="輸入座標">
         
         <div class="invitation-toggle-group">
-            <label>是否邀請:</label>
+            <label>邀請:</label>
             <button id="invite-yes-btn" class="invitation-toggle" onclick="setInvitationStatus(true)">是</button>
             <button id="invite-no-btn" class="invitation-toggle" onclick="setInvitationStatus(false)">否</button>
         </div>
@@ -364,19 +333,69 @@
         <button onclick="saveTime()">儲存到清單</button>
     </div>
 
+<div class="section">
+    <div class="section-title">🎯 任務進度目標 </div>
+    <div class="task-grid" id="goal-matrix">
+        <div class="grid-header">階 \ 任務</div>
+        <div class="grid-header">任務 1</div><div class="grid-header">任務 2</div>
+        <div class="grid-header">任務 3</div><div class="grid-header">任務 4</div>
+
+        <div class="row-label">第 1 階段</div>
+        <div class="cell">1-1<br><input type="number" id="g1-1" value="0" min="0" max="5"></div>
+        <div class="cell">1-2<br><input type="number" id="g1-2" value="0" min="0" max="5"></div>
+        <div class="cell">1-3<br><input type="number" id="g1-3" value="0" min="0" max="5"></div>
+        <div class="cell">1-4<br><input type="number" id="g1-4" value="0" min="0" max="5"></div>
+
+        <div class="row-label">第 2 階段</div>
+        <div class="cell">2-1<br><input type="number" id="g2-1" value="0" min="0" max="5"></div>
+        <div class="cell">2-2<br><input type="number" id="g2-2" value="0" min="0" max="5"></div>
+        <div class="cell">2-3<br><input type="number" id="g2-3" value="0" min="0" max="5"></div>
+        <div class="cell">2-4<br><input type="number" id="g2-4" value="0" min="0" max="5"></div>
+
+        <div class="row-label">第 3 階段</div>
+        <div class="cell">3-1<br><input type="number" id="g3-1" value="0" min="0" max="5"></div>
+        <div class="cell">3-2<br><input type="number" id="g3-2" value="0" min="0" max="5"></div>
+        <div class="cell">3-3<br><input type="number" id="g3-3" value="0" min="0" max="5"></div>
+        <div class="cell">3-4<br><input type="number" id="g3-4" value="0" min="0" max="5"></div>
+
+        <div class="row-label">第 4 階段</div>
+        <div class="cell">4-1<br><input type="number" id="g4-1" value="0" min="0" max="5"></div>
+        <div class="cell">4-2<br><input type="number" id="g4-2" value="0" min="0" max="5"></div>
+        <div class="cell">4-3<br><input type="number" id="g4-3" value="0" min="0" max="5"></div>
+        <div class="cell">4-4<br><input type="number" id="g4-4" value="0" min="0" max="5"></div>
+    </div>
+
+    <div class="status-setting">
+        <strong>🚀 起始進度：</strong>
+        目前在 <select id="start-round"><option>1</option><option>2</option><option>3</option><option>4</option></select> 輪 - 
+        <select id="start-stage"><option>1</option><option>2</option><option>3</option><option>4</option></select> 階，
+        已達成: <input type="number" id="start-attained" value="0" min="0" style="width:50px"> 個
+        <button onclick="refreshTaskAssignment()">🔄 計算任務分配</button>
+    </div>
+</div>
+
+<div style="margin: 10px 0; display: flex; justify-content: flex-end;">
+    <button id="batch-delete-btn" onclick="batchDelete()" style="background-color: #dc3545; display: none;">
+        🗑️ 刪除選取項目 (<span id="select-count">0</span>)
+    </button>
+</div>
+
     <div class="section-title">📋 儲存項目清單</div>
     <table id="stored-times-table">
-<thead>
-        <tr>
-            <th style="width: 5%;">編號</th>
-            <th style="width: 20%;">名稱</th>
-            <th style="width: 15%;">屬性</th> 
-            <th style="width: 10%;">是否邀請</th> 
-            <th onclick="sortTable(4)" style="width: 20%;">計算後時間 🕒</th>
-            <th style="width: 20%;">剩餘時間 ⏳</th> 
-            <th style="width: 10%;">操作</th> 
-        </tr>
-    </thead>
+        <thead>
+            <tr>
+		<th style="width: 40px;"><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"></th>
+                <th>編號</th>
+                <th>名稱</th>
+                <th>屬性</th>
+                <th>座標</th>
+                <th>邀請</th>
+                <th onclick="sortTable(5)">時間 🕒</th>
+                <th>剩餘 ⏳</th>
+		<th>任務階段</th>
+                <th>操作</th>
+            </tr>
+        </thead>
         <tbody id="time-list-body"></tbody>
     </table>
 
@@ -386,40 +405,44 @@
         <input type="file" id="import-file" accept=".xlsx" style="display: none;" onchange="importFromExcel(event)">
         <button onclick="document.getElementById('import-file').click()">匯入 Excel (xlsx)</button>
     </div>
-
 </div>
 
 <script>
+
+// 在 script 開頭或 DOMContentLoaded 加入
+document.addEventListener('DOMContentLoaded', () => {
+    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+    }
+    renderTable();
+});
+
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzBgl-VFYh-a-534FymV_NuqKcJvupEtFZoT7sDf9a7nKTsJpbiC4e4196tMGyZUpLgHw/exec";
     let storedTimes = []; 
     let currentSortDirection = 'asc'; 
     let editingId = null; 
     let currentInvitationStatus = false; 
 
-    // --- 雲端同步函式 ---
+    // --- 雲端同步 ---
     async function uploadToCloud(e) {
         const userID = document.getElementById('user-id-input').value.trim();
-        if (!userID) return alert("請輸入使用者 ID 才能儲存到雲端！");
+        if (!userID) return alert("請輸入使用者 ID！");
         const btn = e.target;
-	const originalText = btn.textContent;
-    
         btn.textContent = "上傳中...";
         try {
             await fetch(GAS_URL, {
                 method: "POST",
                 body: JSON.stringify({ action: "saveAll", userID: userID, data: storedTimes })
             });
-            alert("雲端同步成功！資料已儲存至 ID: " + userID);
-        } catch (e) { alert("同步失敗，請確認網路或 GAS 設定。"); }
+            alert("雲端同步成功！");
+        } catch (e) { alert("同步失敗。"); }
         btn.textContent = "儲存目前列表至雲端";
     }
 
     async function loadFromCloud(e) {
         const userID = document.getElementById('user-id-input').value.trim();
-        if (!userID) return alert("請輸入使用者 ID 才能讀取資料！");
+        if (!userID) return alert("請輸入使用者 ID！");
         const btn = e.target;
-	const originalText = btn.textContent;
-    
         btn.textContent = "讀取中...";
         try {
             const response = await fetch(GAS_URL, {
@@ -427,476 +450,402 @@
                 body: JSON.stringify({ action: "loadAll", userID: userID })
             });
             const cloudData = await response.json();
-
             storedTimes = cloudData.map(item => {
-                // --- 修正邏輯開始 ---
-                // 1. 直接嘗試解析原始字串 (Date 建構子能處理 ISO 8601 格式如 "2026-01-02T08:22:58.000Z")
                 let parsedDate = new Date(item.timeString);
-
-                // 2. 如果解析失敗 (例如某些瀏覽器對特定格式不友善)，再進行字串處理
                 if (isNaN(parsedDate)) {
                     let safeTimeString = item.timeString.replace(/-/g, '/').replace('T', ' ').replace(/\..+/, '');
                     parsedDate = new Date(safeTimeString);
                 }
-                
                 return {
                     ...item,
                     time: parsedDate,
-                    // 關鍵：確保匯入後的 timeString 格式統一為 YYYY-MM-DD HH:MM:SS
-                    timeString: formatTime(parsedDate) 
+                    timeString: formatTime(parsedDate),
+                    coordinate: item.coordinate || '' // 確保座標欄位存在
                 };
-                // --- 修正邏輯結束 ---
             });
             renderTable();
-            alert("已從雲端載入 ID: " + userID + " 的資料！");
-        } catch (e) { alert("讀取失敗，查無資料或權限問題。"); }
+            alert("讀取成功！");
+        } catch (e) { alert("讀取失敗。"); }
         btn.textContent = "讀取雲端資料";
-	
     }
 
-    // --- 時間格式化與核心時間差計算 ---
-    
+    // --- 功能函式 ---
+
+function sendNotification(item) {
+    if (Notification.permission === "granted") {
+        const notification = new Notification("⏰ 時間到期提醒！", {
+            body: `項目：${item.name}\n座標：${item.coordinate || '無'}\n屬性：${item.attribute}`,
+            icon: "https://cdn-icons-png.flaticon.com/512/1827/1827347.png" // 可換成您喜歡的圖示
+        });
+
+        // 點擊通知可以跳回網頁分頁
+        notification.onclick = function() {
+            window.focus();
+            this.close();
+        };
+    }
+}
+
     function setInvitationStatus(status) {
         currentInvitationStatus = status;
-        const yesBtn = document.getElementById('invite-yes-btn');
-        const noBtn = document.getElementById('invite-no-btn');
-
-        yesBtn.classList.remove('is-active-yes', 'is-active-no');
-        noBtn.classList.remove('is-active-yes', 'is-active-no');
-
-        if (status) {
-            yesBtn.classList.add('is-active-yes');
-        } else {
-            noBtn.classList.add('is-active-no');
-        }
+        document.getElementById('invite-yes-btn').className = 'invitation-toggle' + (status ? ' is-active-yes' : '');
+        document.getElementById('invite-no-btn').className = 'invitation-toggle' + (!status ? ' is-active-no' : '');
     }
     
     function formatTime(date) {
         if (!date || isNaN(date)) return "無效時間";
-        const Y = date.getFullYear();
-        const M = String(date.getMonth() + 1).padStart(2, '0');
-        const D = String(date.getDate()).padStart(2, '0');
-        const h = String(date.getHours()).padStart(2, '0');
-        const m = String(date.getMinutes()).padStart(2, '0');
-        const s = String(date.getSeconds()).padStart(2, '0');
-        return `${Y}-${M}-${D} ${h}:${m}:${s}`;
-    }
-
-    // *** 調整：不再格式化為 datetime-local 格式，而是標準的 YYYY-MM-DD HH:MM:SS ***
-    function formatTimeForEdit(date) {
-        if (!date || isNaN(date)) return '';
-        const Y = date.getFullYear();
-        const M = String(date.getMonth() + 1).padStart(2, '0');
-        const D = String(date.getDate()).padStart(2, '0');
-        const h = String(date.getHours()).padStart(2, '0');
-        const m = String(date.getMinutes()).padStart(2, '0');
-        const s = String(date.getSeconds()).padStart(2, '0');
-        // 返回易讀的格式，讓使用者直接編輯
-        return `${Y}-${M}-${D} ${h}:${m}:${s}`; 
+        const f = (n) => String(n).padStart(2, '0');
+        return `${date.getFullYear()}-${f(date.getMonth() + 1)}-${f(date.getDate())} ${f(date.getHours())}:${f(date.getMinutes())}:${f(date.getSeconds())}`;
     }
 
     function formatTimeDifference(targetDate) {
-        const now = new Date().getTime();
-        const target = targetDate.getTime();
-        let diffMs = target - now;
+        const diffMs = targetDate.getTime() - new Date().getTime();
         const isFuture = diffMs > 0;
-        diffMs = Math.abs(diffMs);
-
-        const s = Math.floor(diffMs / 1000);
+        const s = Math.floor(Math.abs(diffMs) / 1000);
         const m = Math.floor(s / 60);
         const h = Math.floor(m / 60);
         const d = Math.floor(h / 24);
-
-        const sec = s % 60;
-        const min = m % 60;
-        const hour = h % 24;
-
-        let parts = [];
-        if (d > 0) parts.push(`${d}天`);
-        if (hour > 0) parts.push(`${hour}時`);
-        if (min > 0) parts.push(`${min}分`);
-        
-        // 僅當天數、小時、分鐘都為零時，才顯示秒數
-        if (d === 0 && hour === 0 && min === 0) {
-             parts.push(`${sec}秒`);
-        } else {
-             // 否則，在最小單位顯示前兩位
-             if (parts.length < 3) parts.push(`${sec}秒`);
-        }
-        
-        const timeDiffString = parts.length > 0 ? parts.slice(0, 3).join('') : '即時';
-
-        if (isFuture) {
-            return `<span style="color: var(--active-toggle-color); font-weight: bold;">還有 ${timeDiffString}</span>`;
-        } else {
-            return `<span style="color: var(--inactive-toggle-color); font-weight: bold;">已過 ${timeDiffString}</span>`;
-        }
+        let res = d > 0 ? `${d}天${h%24}時${m%60}分${s%60}秒` : h > 0 ? `${h}時${m%60}分${s%60}秒` : `${m}分${s%60}秒`;
+        return `<span style="color: ${isFuture ? 'var(--active-toggle-color)' : 'var(--inactive-toggle-color)'}; font-weight: bold;">${isFuture ? '還有' : '已過'} ${res}</span>`;
     }
-    // --- 頁面時間更新邏輯 ---
+
+function calculateTime() {
+    // 1. 取得輸入數值
+    const d = parseInt(document.getElementById('days').value) || 0;
+    const h = parseInt(document.getElementById('hours').value) || 0;
+    const m = parseInt(document.getElementById('minutes').value) || 0;
+    const s = parseInt(document.getElementById('seconds').value) || 0;
+    const operationType = document.getElementById('operation-type').value;
+
+    // 2. 計算總毫秒數
+    const ms = (d * 86400000) + (h * 3600000) + (m * 60000) + (s * 1000);
     
-    function updateCurrentTime() {
-        const now = new Date();
-        document.getElementById('current-time-display').textContent = '當前時間: ' + formatTime(now);
-    }
+    // 3. 根據運算類型計算結果時間
+    const now = new Date().getTime();
+    const resDate = new Date(operationType === 'add' ? now + ms : now - ms);
     
-    // 定時更新時間差
-    function updateTimeDifferences() {
-        const rows = document.getElementById('time-list-body').rows;
-        Array.from(rows).forEach(row => {
-            const id = parseInt(row.getAttribute('data-id'));
-            const item = storedTimes.find(i => i.id === id);
-            
-            // 檢查時間差顯示單元格是否存在 (第 6 欄)
-            const diffCell = row.cells[5]; 
-            
-            if (item && diffCell && editingId !== id) {
-                diffCell.innerHTML = formatTimeDifference(item.time);
-            }
-        });
-    }
+    // 4. 建立時間差字串 (Delta String)
+    const deltaString = `${d}日${h}時${m}分${s}秒`;
 
-    // 設定每秒更新當前時間和所有項目的時間差
-    setInterval(() => {
-        updateCurrentTime();
-        updateTimeDifferences();
-    }, 1000);
-    updateCurrentTime(); // 立即呼叫一次
-
-    // --- 計算器與儲存邏輯 (保持不變) ---
+    // 5. 更新顯示介面與暫存屬性
+    const disp = document.getElementById('result-display');
     
-    function clearInputs() {
-        document.getElementById('days').value = 0;
-        document.getElementById('hours').value = 0;
-        document.getElementById('minutes').value = 0;
-        document.getElementById('seconds').value = 0;
-        document.getElementById('operation-type').value = 'add';
-
-        const resultDisplay = document.getElementById('result-display');
-        resultDisplay.textContent = '計算結果將顯示在此 (YYYY-MM-DD HH:MM:SS)';
-        resultDisplay.calculatedDate = null; 
-        resultDisplay.timeDeltaString = ''; 
-
-        setInvitationStatus(false);
-    }
-
-    function calculateTime() {
-        const days = parseInt(document.getElementById('days').value) || 0;
-        const hours = parseInt(document.getElementById('hours').value) || 0;
-        const minutes = parseInt(document.getElementById('minutes').value) || 0;
-        const seconds = parseInt(document.getElementById('seconds').value) || 0;
-        const operationType = document.getElementById('operation-type').value;
-
-        const timeDeltaMs = (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000);
-        const now = new Date();
-        let calculatedTime = (operationType === 'add') 
-            ? new Date(now.getTime() + timeDeltaMs) 
-            : new Date(now.getTime() - timeDeltaMs);
-        
-        // 建立時間差字串
-        const deltaString = `${days}日${hours}時${minutes}分${seconds}秒`;
-
-        const resultDisplay = document.getElementById('result-display');
-        resultDisplay.textContent = `${formatTime(calculatedTime)} (${deltaString})`;
-        resultDisplay.calculatedDate = calculatedTime;
-        resultDisplay.timeDeltaString = deltaString; 
-    }
+    // 修正字串拼接語法
+    disp.textContent = `${formatTime(resDate)} (${deltaString})`;
+    
+    // 儲存資料供後續「儲存到清單」功能使用
+    disp.calculatedDate = resDate;
+    disp.timeDeltaString = deltaString;
+}
 
     function saveTime() {
-        const resultDisplay = document.getElementById('result-display');
-        const calculatedDate = resultDisplay.calculatedDate;
-
-        if (!calculatedDate || isNaN(calculatedDate)) {
-            alert('請先點擊「計算時間」取得有效的結果。');
-            return;
-        }
-
-        const name = document.getElementById('save-name').value.trim() || '未命名項目';
-        const attribute = document.getElementById('save-attribute').value.trim() || '無屬性'; 
-        const isInvited = currentInvitationStatus; 
-
+        const resDisp = document.getElementById('result-display');
+        if (!resDisp.calculatedDate) return alert('請先計算時間！');
         const newItem = {
             id: Date.now(),
-            name: name,
-            attribute: attribute, 
-            isInvited: isInvited, 
-            time: calculatedDate, 
-            timeString: formatTime(calculatedDate), 
-        };
+            name: document.getElementById('save-name').value.trim() || '未命名',
+            attribute: document.getElementById('save-attribute').value.trim() || '無',
+            coordinate: document.getElementById('save-coordinate').value.trim() || '', // 儲存座標
+            isInvited: currentInvitationStatus,
+            time: resDisp.calculatedDate,
+            timeString: formatTime(resDisp.calculatedDate)
 
+        };
         storedTimes.push(newItem);
-        sortTable(4, 'asc'); 
-        
-        document.getElementById('save-name').value = ''; 
+        renderTable();
+        document.getElementById('save-name').value = '';
         document.getElementById('save-attribute').value = '';
-        setInvitationStatus(false); 
+        document.getElementById('save-coordinate').value = '';
+    }
+
+function saveEdit(id) {
+    const itemIndex = storedTimes.findIndex(item => item.id === id);
+    if (itemIndex === -1) return;
+
+    const newName = document.getElementById(`edit-name-${id}`).value.trim();
+    const newAttribute = document.getElementById(`edit-attribute-${id}`).value.trim();
+    const newCoordinate = document.getElementById(`edit-coordinate-${id}`).value.trim(); // 新增座標
+    const newTimeString = document.getElementById(`edit-time-${id}`).value.trim();
+    
+    // 從按鈕狀態讀取當前邀請狀態
+    const invitedStatus = document.getElementById(`btn-inv-${id}`).classList.contains('is-active-yes');
+
+    // 解析時間字串
+    const dateToParse = newTimeString.replace(/-/g, '/');
+    const newTime = new Date(dateToParse);
+    
+    if (isNaN(newTime)) {
+        alert('時間格式無效，請使用 YYYY-MM-DD HH:MM:SS');
+        return;
     }
     
-    function deleteTime(id) {
-        if (editingId === id) {
-            alert('請先儲存或退出編輯模式，再進行刪除。');
-            return;
-        }
-        if (!confirm('確定要刪除這個項目嗎？')) return;
-        storedTimes = storedTimes.filter(item => item.id !== id);
-        renderTable(); 
-    }
+    // 更新資料模型
+    storedTimes[itemIndex].name = newName || '未命名項目';
+    storedTimes[itemIndex].attribute = newAttribute || '無屬性';
+    storedTimes[itemIndex].coordinate = newCoordinate;
+    storedTimes[itemIndex].isInvited = invitedStatus;
+    storedTimes[itemIndex].time = newTime;
+    storedTimes[itemIndex].timeString = formatTime(newTime);
     
-    function editTime(id) {
-        if (editingId !== null && editingId !== id) {
-            alert('請先儲存或取消目前正在編輯的項目。');
-            return;
-        }
-        editingId = id;
-        renderTable();
-    }
+    editingId = null; 
+    renderTable(); 
+}
+
+// 全選/全不選功能
+function toggleSelectAll(masterCheckbox) {
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+    updateBatchDeleteBtn();
+}
+
+// 更新批次刪除按鈕狀態
+function updateBatchDeleteBtn() {
+    const selectedCount = document.querySelectorAll('.item-checkbox:checked').length;
+    const btn = document.getElementById('batch-delete-btn');
+    const countSpan = document.getElementById('select-count');
     
-    function saveEdit(id) {
-        const itemIndex = storedTimes.findIndex(item => item.id === id);
-        if (itemIndex === -1) return;
+    if (!btn) return; // 防止 HTML 尚未建立時報錯
 
-        const newName = document.getElementById(`edit-name-${id}`).value.trim();
-        const newAttribute = document.getElementById(`edit-attribute-${id}`).value.trim();
-        // *** 修改：從 type="text" 讀取時間字串 ***
-        const newTimeString = document.getElementById(`edit-time-${id}`).value.trim();
-        const invitedStatus = document.getElementById(`edit-status-${id}`).dataset.status === 'true';
-
-        // 解析新的時間
-        // 使用 replace 處理常見的日期分隔符 (例如將 YYYY-MM-DD HH:MM:SS 轉為 YYYY/MM/DD HH:MM:SS 以增強相容性)
-        const dateToParse = newTimeString.replace(/-/g, '/');
-        const newTime = new Date(dateToParse);
-        
-        if (isNaN(newTime) || newTime.toString() === "Invalid Date") {
-            alert('時間格式無效，請檢查日期和時間輸入！請使用 YYYY-MM-DD HH:MM:SS 格式。');
-            return;
-        }
-        
-        storedTimes[itemIndex].name = newName || '未命名項目';
-        storedTimes[itemIndex].attribute = newAttribute || '無屬性';
-        storedTimes[itemIndex].isInvited = invitedStatus;
-        storedTimes[itemIndex].time = newTime;
-        storedTimes[itemIndex].timeString = formatTime(newTime);
-        
-        editingId = null; 
-        renderTable(); 
+    if (selectedCount > 0) {
+        btn.style.display = 'inline-block';
+        if (countSpan) countSpan.textContent = selectedCount;
+    } else {
+        btn.style.display = 'none';
+        // 如果手動取消所有勾選，也要取消標頭的「全選」勾選
+        const selectAllBox = document.getElementById('select-all');
+        if (selectAllBox) selectAllBox.checked = false;
     }
+}
 
-    // 新增：取消編輯
-    function cancelEdit() {
-        editingId = null;
-        renderTable();
-    }
+// 執行批次刪除
+function batchDelete() {
+    const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+    if (selectedCheckboxes.length === 0) return;
+
+    if (!confirm(`確定要刪除這 ${selectedCheckboxes.length} 個項目嗎？`)) return;
+
+    // 取得所有勾選的 ID
+    const idsToDelete = Array.from(selectedCheckboxes).map(cb => Number(cb.value));
+
+    // 過濾掉選中的 ID
+    storedTimes = storedTimes.filter(item => !idsToDelete.includes(item.id));
+
+    // 重置全選框與更新表格
+    const selectAllBox = document.getElementById('select-all');
+    if (selectAllBox) selectAllBox.checked = false;
+
+    renderTable();
+    updateBatchDeleteBtn();
+}
+
+function refreshTaskAssignment() {
+    const now = Date.now();
     
-    function toggleEditInvitation(id) {
-        const itemIndex = storedTimes.findIndex(item => item.id === id);
-        if (itemIndex === -1) return;
+    // 1. 取得所有未到期項目，並按剩餘時間由小到大排序 (不遞補原則：計算當下的快照)
+    let activeItems = storedTimes.filter(item => item.time.getTime() > now)
+                                 .sort((a, b) => a.time - b.time);
+    
+    // 2. 取得起始位置
+    let r = parseInt(document.getElementById('start-round').value);
+    let s = parseInt(document.getElementById('start-stage').value);
+    let attained = parseInt(document.getElementById('start-attained').value);
+    let extraCount = 1;
 
-        const currentStatus = storedTimes[itemIndex].isInvited;
-        const newStatus = !currentStatus;
+    // 取得目標數量的輔助函式
+    const getGoal = (round, stage) => parseInt(document.getElementById(`g${round}-${stage}`).value) || 0;
+
+    // 3. 逐一分配標籤
+    activeItems.forEach(item => {
+        let assigned = false;
         
-        storedTimes[itemIndex].isInvited = newStatus;
-
-        const btn = document.getElementById(`edit-status-${id}`);
-        btn.textContent = newStatus ? '是' : '否';
-        btn.dataset.status = newStatus;
-        btn.className = 'invitation-toggle-table'; 
-        btn.classList.add(newStatus ? 'is-active-yes' : 'is-active-no');
-    }
-
-
-    // 修改：重新繪製表格，確保按鈕在操作欄位內，且時間為純文字輸入
-    function renderTable() {
-        const tableBody = document.getElementById('time-list-body');
-        tableBody.innerHTML = ''; 
-
-        storedTimes.forEach((item, index) => {
-            const row = tableBody.insertRow();
-            row.setAttribute('data-id', item.id);
-
-            row.insertCell(0).textContent = index + 1; 
-            const nameCell = row.insertCell(1);
-            const attributeCell = row.insertCell(2);
-            const invitedCell = row.insertCell(3);
-            const timeCell = row.insertCell(4);
-            const diffCell = row.insertCell(5); 
-            const operationCell = row.insertCell(6);
-            operationCell.style.whiteSpace = 'nowrap'; 
-
-            if (editingId === item.id) {
-                // --- 編輯模式 ---
-                nameCell.innerHTML = `<input type="text" id="edit-name-${item.id}" value="${item.name.replace(/"/g, '&quot;')}" style="width: 95%;">`;
-                attributeCell.innerHTML = `<input type="text" id="edit-attribute-${item.id}" value="${item.attribute.replace(/"/g, '&quot;')}" style="width: 95%;">`;
-                
-                // *** 調整：使用 type="text" 讓使用者直接編輯時間字串 ***
-                timeCell.innerHTML = `<input type="text" id="edit-time-${item.id}" value="${formatTimeForEdit(item.time)}" placeholder="YYYY-MM-DD HH:MM:SS" style="width: 95%;">`;
-                timeCell.style.fontSize = '0.9em'; 
-
-                diffCell.textContent = '編輯中...';
-                
-                const statusClass = item.isInvited ? 'is-active-yes' : 'is-active-no';
-                invitedCell.innerHTML = `
-                    <button 
-                        id="edit-status-${item.id}" 
-                        class="invitation-toggle-table ${statusClass}" 
-                        data-status="${item.isInvited}"
-                        onclick="toggleEditInvitation(${item.id})" 
-                        title="點擊切換邀請狀態">
-                        ${item.isInvited ? '是' : '否'}
-                    </button>
-                `;
-                invitedCell.style.textAlign = 'center';
-
-                // *** 調整：按鈕放在 operationCell 內 ***
-                operationCell.innerHTML = `
-                    <button class="save-edit-btn" onclick="saveEdit(${item.id})" title="儲存修改">儲存</button>
-                    <button class="cancel-edit-btn" onclick="cancelEdit()" title="放棄修改">取消</button>
-                `;
-
+        while (r <= 4) {
+            let goal = getGoal(r, s);
+            
+            if (attained < goal) {
+                // 該階段還有缺口，分配進去
+                item.taskStage = `${r}-${s}`;
+                attained++;
+                assigned = true;
+                break; 
             } else {
-                // --- 顯示模式 ---
-                nameCell.textContent = item.name;
-                attributeCell.textContent = item.attribute;
-                
-                invitedCell.textContent = item.isInvited ? '✅ 是' : '❌ 否';
-                invitedCell.style.textAlign = 'center';
-
-                timeCell.textContent = item.timeString;
-                
-                diffCell.innerHTML = formatTimeDifference(item.time); 
-
-                // *** 調整：按鈕放在 operationCell 內 ***
-                operationCell.innerHTML = `
-                    <button class="edit-btn" onclick="editTime(${item.id})" title="編輯此項目">修改</button>
-                    <button class="delete-btn" onclick="deleteTime(${item.id})" title="刪除此項目">刪除</button>
-                `;
+                // 該階段已滿，移動到下一個階段
+                attained = 0;
+                s++;
+                if (s > 4) { s = 1; r++; }
             }
-        });
-    }
-
-    function sortTable(columnIndex, initialDirection) {
-        if (columnIndex !== 4) return; 
-
-        if (initialDirection) {
-             currentSortDirection = initialDirection;
-        } else {
-             currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
         }
-
-        storedTimes.sort((a, b) => {
-            const timeA = a.time.getTime();
-            const timeB = b.time.getTime();
-
-            if (currentSortDirection === 'asc') {
-                return timeA - timeB; 
-            } else {
-                return timeB - timeA; 
-            }
-        });
-
-        renderTable(); 
-    }
-
-
-    // --- Excel 匯入/匯出邏輯 (保持不變) ---
-    function exportToExcel() {
-        if (storedTimes.length === 0) {
-            alert('清單中沒有資料可以匯出！');
-            return;
-        }
-
-        const fileNamePrefix = document.getElementById('excel-file-name').value.trim();
-        const defaultFileName = "時間計算結果";
-        const baseFileName = fileNamePrefix ? fileNamePrefix.replace(/[^a-zA-Z0-9_\u4e00-\u9fa5]/g, '_') : defaultFileName;
-        const dateSuffix = new Date().toISOString().slice(0, 10);
-        const finalFileName = `${baseFileName}_${dateSuffix}.xlsx`;
-
-        // Excel 標頭
-        const ws_data = [
-            ["編號", "名稱", "屬性", "是否邀請", "計算後時間"] 
-        ];
         
-        storedTimes.forEach((item, index) => {
-            ws_data.push([
-                index + 1, 
-                item.name,
-                item.attribute, 
-                item.isInvited ? '是' : '否', 
-                item.timeString, 
-            ]);
-        });
-
-        const ws = XLSX.utils.aoa_to_sheet(ws_data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "時間計算結果");
-
-        XLSX.writeFile(wb, finalFileName); 
-    }
-
-    function importFromExcel(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-
-        reader.onload = function(e) {
-            try {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                // 讀取從第 2 行開始的所有資料 (header: 1, range: 1)
-                const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, range: 1 });
-
-                const importedItems = [];
-                json.forEach(row => {
-                    // 必須至少有 5 欄資料：[編號, 名稱, 屬性, 是否邀請, 計算後時間]
-                    if (row.length < 5) return; 
-
-                    const name = String(row[1]).trim();
-                    const attribute = String(row[2]).trim() || '無屬性'; 
-                    const invitedText = String(row[3]).toUpperCase().trim();
-                    const isInvited = (invitedText === '是' || invitedText === 'TRUE' || invitedText === '1');
-                    const timeString = String(row[4]).trim();
-                    // 為了相容性，將日期中的 '-' 替換為 '/'
-                    const dateToParse = timeString.replace(/-/g, '/');
-                    const parsedTime = new Date(dateToParse);
-                    
-                    if (isNaN(parsedTime)) return;
-
-                    importedItems.push({
-                        id: Date.now() + Math.random(), 
-                        name: name,
-                        attribute: attribute, 
-                        isInvited: isInvited, 
-                        time: parsedTime, 
-                        timeString: formatTime(parsedTime),
-                    });
-                });
-
-                storedTimes = importedItems;
-                editingId = null; 
-                sortTable(4, 'asc'); 
-                alert(`成功匯入 ${importedItems.length} 筆資料！`);
-
-            } catch (error) {
-                console.error("匯入 Excel 失敗:", error);
-                alert("匯入 Excel 檔案時發生錯誤。請確認檔案格式是否正確 (.xlsx)。");
-            }
-        };
-
-        reader.readAsArrayBuffer(file);
-    }
-
-
-
-    document.addEventListener('DOMContentLoaded', () => {
-        clearInputs();
-        updateCurrentTime();
-        if(storedTimes.length > 0) {
-            sortTable(4, 'asc'); 
+        // 如果 4-4 都跑完了還有剩餘項目，標記為超額
+        if (!assigned) {
+            item.taskStage = `超額項目${String(extraCount++).padStart(2, '0')}`;
         }
-        // 確保在載入時開始更新時間差
-        updateTimeDifferences(); 
     });
+
+    // 4. 已到期的項目將標籤清空
+    storedTimes.forEach(item => {
+        if (item.time.getTime() <= now) {
+            item.taskStage = '';
+        }
+    });
+
+    // 5. 重新渲染表格
+    renderTable();
+}
+
+
+function renderTable() {
+    const body = document.getElementById('time-list-body');
+    body.innerHTML = ''; // 清空表格
+
+    storedTimes.forEach((item, index) => {
+        const row = body.insertRow();
+        row.setAttribute('data-id', item.id);
+        const isEditing = editingId === item.id;
+
+        // --- 第 0 欄：勾選框 (批次刪除用) ---
+        const cCheck = row.insertCell(0);
+        cCheck.style.textAlign = 'center';
+        cCheck.innerHTML = `<input type="checkbox" class="item-checkbox" value="${item.id}" onchange="updateBatchDeleteBtn()">`;
+
+        // --- 第 1 欄：編號 ---
+        row.insertCell(1).textContent = index + 1;
+        
+        // --- 定義其餘單元格 ---
+        const cName = row.insertCell(2);
+        const cAttr = row.insertCell(3);
+        const cCoord = row.insertCell(4);
+        const cInv = row.insertCell(5);
+        const cTime = row.insertCell(6);
+        const cDiff = row.insertCell(7);
+        const cStage = row.insertCell(8);
+        const cOpt = row.insertCell(9);
+
+        if (isEditing) {
+            // --- 編輯模式 ---
+            cName.innerHTML = `<input type="text" id="edit-name-${item.id}" value="${item.name}" style="width:90%">`;
+            cAttr.innerHTML = `<input type="text" id="edit-attribute-${item.id}" value="${item.attribute}" style="width:90%">`;
+            cCoord.innerHTML = `<input type="text" id="edit-coordinate-${item.id}" value="${item.coordinate || ''}" style="width:90%">`;
+            
+            const statusClass = item.isInvited ? 'is-active-yes' : 'is-active-no';
+            cInv.innerHTML = `
+                <button onclick="toggleEditInv(${item.id})" id="btn-inv-${item.id}" 
+                        class="invitation-toggle-table ${statusClass}">
+                    ${item.isInvited ? '是' : '否'}
+                </button>`;
+            cInv.style.textAlign = 'center';
+
+            cTime.innerHTML = `<input type="text" id="edit-time-${item.id}" value="${item.timeString}" style="width:95%">`;
+            cDiff.textContent = '編輯中...';
+            cStage.textContent = item.taskStage;
+            
+            cOpt.innerHTML = `
+                <button class="save-edit-btn" onclick="saveEdit(${item.id})">儲存</button>
+                <button class="cancel-edit-btn" onclick="editingId=null;renderTable()">取消</button>`;
+        } else {
+            // --- 顯示模式 ---
+            cName.textContent = item.name;
+            cAttr.textContent = item.attribute;
+            cCoord.textContent = item.coordinate || ''; // 顯示座標
+            
+            cInv.textContent = item.isInvited ? '✅ 是' : '❌ 否';
+            cInv.style.textAlign = 'center';
+
+            cTime.textContent = item.timeString;
+            cDiff.innerHTML = formatTimeDifference(item.time);
+            cStage.textContent = item.taskStage;
+            
+            cOpt.innerHTML = `
+                <button class="edit-btn" onclick="editingId=${item.id};renderTable()">修改</button>
+                <button class="delete-btn" onclick="deleteTime(${item.id})">刪除</button>`;
+        }
+    });
+
+    // 每次重新繪製後，檢查批次刪除按鈕是否該顯示
+    if (typeof updateBatchDeleteBtn === 'function') {
+        updateBatchDeleteBtn();
+    }
+}
+
+    function deleteTime(id) {
+        if (confirm('確定刪除？')) { storedTimes = storedTimes.filter(i => i.id !== id); renderTable(); }
+    }
+
+    function toggleEditInv(id) {
+        const idx = storedTimes.findIndex(i => i.id === id);
+        storedTimes[idx].isInvited = !storedTimes[idx].isInvited;
+        const btn = document.getElementById(`btn-inv-${id}`);
+        btn.textContent = storedTimes[idx].isInvited ? '是' : '否';
+        btn.className = `invitation-toggle-table ${storedTimes[idx].isInvited?'is-active-yes':'is-active-no'}`;
+    }
+
+    function sortTable(n) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+        storedTimes.sort((a,b) => (currentSortDirection==='asc'?1:-1) * (a.time - b.time));
+        renderTable();
+    }
+
+    // --- Excel ---
+    function exportToExcel() {
+        const data = [["編號", "名稱", "屬性", "座標", "邀請", "時間"]];
+        storedTimes.forEach((item, i) => data.push([i+1, item.name, item.attribute, item.coordinate, item.isInvited?'是':'否', item.timeString]));
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), "清單");
+        XLSX.writeFile(wb, (document.getElementById('excel-file-name').value || "時間表") + ".xlsx");
+    }
+
+    function importFromExcel(e) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const sheet = XLSX.read(ev.target.result, {type:'array'}).Sheets[XLSX.read(ev.target.result, {type:'array'}).SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(sheet, {header:1, range:1});
+            storedTimes = json.filter(r => r.length >= 6).map(r => ({
+                id: Date.now() + Math.random(),
+                name: String(r[1]),
+                attribute: String(r[2]),
+                coordinate: String(r[3] || ''),
+                isInvited: r[4] === '是',
+                time: new Date(String(r[5]).replace(/-/g, '/')),
+                timeString: String(r[5])
+            }));
+            renderTable();
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);
+    }
+
+    function clearInputs() {
+        ['days','hours','minutes','seconds'].forEach(id => document.getElementById(id).value = 0);
+        document.getElementById('result-display').textContent = '計算結果將顯示在此';
+        document.getElementById('result-display').calculatedDate = null;
+    }
+
+setInterval(() => {
+    const now = new Date().getTime();
+    document.getElementById('current-time-display').textContent = '當前時間: ' + formatTime(new Date());
+
+    if (editingId === null) {
+        const rows = document.getElementById('time-list-body').rows;
+        Array.from(rows).forEach(row => {
+            const id = row.getAttribute('data-id');
+            const item = storedTimes.find(i => i.id == id);
+            
+            if (item) {
+                // 更新剩餘時間顯示
+                row.cells[7].innerHTML = formatTimeDifference(item.time);
+
+                // --- 新增：通知判斷邏輯 ---
+                const diffMs = item.time.getTime() - now;
+                
+                // 如果距離到期剩餘不到 1 秒，且尚未發送過通知
+                if (diffMs <= 60000 && diffMs > -20000 && !item.notified) {
+                    sendNotification(item);
+                    item.notified = true; // 標記為已通知，避免重複觸發
+                }
+            }
+        });
+    }
+}, 1000);
+
+    document.addEventListener('DOMContentLoaded', renderTable);
 </script>
 </body>
 </html>
