@@ -244,7 +244,7 @@
         /* 4x4 矩陣樣式 */
         .task-grid {
             display: grid;
-            grid-template-columns: 80px repeat(4, 1fr);
+            grid-template-columns: 120px repeat(4, 1fr);
             gap: 8px;
             margin: 20px 0;
             background: #f8f9fa;
@@ -336,7 +336,7 @@
 <div class="section">
     <div class="section-title">🎯 任務進度目標 </div>
     <div class="task-grid" id="goal-matrix">
-        <div class="grid-header">階 \ 任務</div>
+        <div class="grid-header">階段 \ 任務</div>
         <div class="grid-header">任務 1</div><div class="grid-header">任務 2</div>
         <div class="grid-header">任務 3</div><div class="grid-header">任務 4</div>
 
@@ -367,8 +367,8 @@
 
     <div class="status-setting">
         <strong>🚀 起始進度：</strong>
-        目前在 <select id="start-round"><option>1</option><option>2</option><option>3</option><option>4</option></select> 輪 - 
-        <select id="start-stage"><option>1</option><option>2</option><option>3</option><option>4</option></select> 階，
+        目前在第 <select id="start-round"><option>1</option><option>2</option><option>3</option><option>4</option></select> 階 -任務 
+        <select id="start-stage"><option>1</option><option>2</option><option>3</option><option>4</option></select> ，
         已達成: <input type="number" id="start-attained" value="0" min="0" style="width:50px"> 個
         <button onclick="refreshTaskAssignment()">🔄 計算任務分配</button>
     </div>
