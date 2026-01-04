@@ -275,6 +275,61 @@
 #stored-times-table th:nth-child(9) { width: 60px; } /* 任務階段 */
 #stored-times-table th:nth-child(10) { width: 110px; } /* 操作 */
 
+/* 針對手機螢幕 (寬度小於 768px) 的修正 */
+@media screen and (max-width: 768px) {
+    #stored-times-table, 
+    #stored-times-table thead, 
+    #stored-times-table tbody, 
+    #stored-times-table th, 
+    #stored-times-table td, 
+    #stored-times-table tr { 
+        display: block; 
+    }
+
+    /* 隱藏原本的表頭 */
+    #stored-times-table thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    #stored-times-table tr {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        background: #fff;
+        border-radius: 8px;
+        padding: 5px;
+    }
+
+    #stored-times-table td { 
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 35%; 
+        text-align: left;
+        min-height: 30px;
+        word-break: break-all; /* 防止長文字超出螢幕 */
+    }
+
+    /* 使用偽元素顯示欄位名稱 */
+    #stored-times-table td:before { 
+        position: absolute;
+        left: 10px;
+        width: 30%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        font-weight: bold;
+        color: var(--secondary-color);
+        content: attr(data-label);
+    }
+
+    /* 調整編輯模式下的輸入框寬度 */
+    #stored-times-table td input {
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -286,7 +341,7 @@
     <div class="section-title" style="border-left-color: var(--cloud-color);">☁️ 雲端同步設定</div>
     <div class="cloud-panel">
         <label for="user-id-input" style="font-weight: bold;">使用者 ID:</label>
-        <input type="text" id="user-id-input" placeholder="輸入專屬 ID 進行同步">
+        <input type="text" id="user-id-input" placeholder="輸入 ID 後讀取或儲存">
         <button onclick="loadFromCloud(event)" style="background-color: var(--cloud-color);">讀取雲端資料</button>
         <button onclick="uploadToCloud(event)" style="background-color: var(--active-toggle-color);">儲存目前列表至雲端</button>
     </div>
@@ -414,6 +469,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (Notification.permission !== "granted" && Notification.permission !== "denied") {
         Notification.requestPermission();
     }
+
+    const userIdInput = document.getElementById('user-id-input');
+    const fileNameInput = document.getElementById('excel-file-name');
+// 當使用者在 ID 欄位輸入時，自動同步到檔案名稱
+    userIdInput.addEventListener('input', () => {
+        if (userIdInput.value.trim() !== "") {
+            fileNameInput.value = userIdInput.value.trim();
+        }
+    });
+
+    setInterval(updateTimers, 1000);
+
+
     renderTable();
 });
 
@@ -422,6 +490,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSortDirection = 'asc'; 
     let editingId = null; 
     let currentInvitationStatus = false; 
+
+
 
     // --- 雲端同步 ---
     async function uploadToCloud(e) {
@@ -703,22 +773,23 @@ function renderTable() {
         const isEditing = editingId === item.id;
 
         // --- 第 0 欄：勾選框 (批次刪除用) ---
-        const cCheck = row.insertCell(0);
-        cCheck.style.textAlign = 'center';
+        const cCheck = row.insertCell(0); cCheck.setAttribute('data-label', '選取');
+        cCheck.style.textAlign = 'left';
         cCheck.innerHTML = `<input type="checkbox" class="item-checkbox" value="${item.id}" onchange="updateBatchDeleteBtn()">`;
 
         // --- 第 1 欄：編號 ---
-        row.insertCell(1).textContent = index + 1;
+	const cNum = row.insertCell(1);   cNum.setAttribute('data-label', '編號');
+        cNum.textContent = index + 1;
         
         // --- 定義其餘單元格 ---
-        const cName = row.insertCell(2);
-        const cAttr = row.insertCell(3);
-        const cCoord = row.insertCell(4);
-        const cInv = row.insertCell(5);
-        const cTime = row.insertCell(6);
-        const cDiff = row.insertCell(7);
-        const cStage = row.insertCell(8);
-        const cOpt = row.insertCell(9);
+        const cName = row.insertCell(2);  cName.setAttribute('data-label', '名稱');
+        const cAttr = row.insertCell(3);  cAttr.setAttribute('data-label', '屬性');
+        const cCoord = row.insertCell(4); cCoord.setAttribute('data-label', '座標');
+        const cInv = row.insertCell(5);   cInv.setAttribute('data-label', '邀請');
+        const cTime = row.insertCell(6);  cTime.setAttribute('data-label', '時間');
+        const cDiff = row.insertCell(7);  cDiff.setAttribute('data-label', '剩餘');
+        const cStage = row.insertCell(8); cStage.setAttribute('data-label', '階段');
+        const cOpt = row.insertCell(9);   cOpt.setAttribute('data-label', '操作');
 
         if (isEditing) {
             // --- 編輯模式 ---
@@ -732,7 +803,7 @@ function renderTable() {
                         class="invitation-toggle-table ${statusClass}">
                     ${item.isInvited ? '是' : '否'}
                 </button>`;
-            cInv.style.textAlign = 'center';
+            cInv.style.textAlign = 'left';
 
             cTime.innerHTML = `<input type="text" id="edit-time-${item.id}" value="${item.timeString}" style="width:95%">`;
             cDiff.textContent = '編輯中...';
@@ -748,7 +819,7 @@ function renderTable() {
             cCoord.textContent = item.coordinate || ''; // 顯示座標
             
             cInv.textContent = item.isInvited ? '✅ 是' : '❌ 否';
-            cInv.style.textAlign = 'center';
+            cInv.style.textAlign = 'left';
 
             cTime.textContent = item.timeString;
             cDiff.innerHTML = formatTimeDifference(item.time);
@@ -785,13 +856,29 @@ function renderTable() {
     }
 
     // --- Excel ---
-    function exportToExcel() {
-        const data = [["編號", "名稱", "屬性", "座標", "邀請", "時間"]];
-        storedTimes.forEach((item, i) => data.push([i+1, item.name, item.attribute, item.coordinate, item.isInvited?'是':'否', item.timeString]));
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), "清單");
-        XLSX.writeFile(wb, (document.getElementById('excel-file-name').value || "時間表") + ".xlsx");
-    }
+function exportToExcel() {
+    const data = [["編號", "名稱", "屬性", "座標", "邀請", "時間"]];
+    storedTimes.forEach((item, i) => {
+        data.push([
+            i + 1, 
+            item.name, 
+            item.attribute, 
+            item.coordinate, 
+            item.isInvited ? '是' : '否', 
+            item.timeString
+        ]);
+    });
+
+    // 檔名邏輯：輸入框內容 || 使用者ID || "時間表"
+    const inputName = document.getElementById('excel-file-name').value.trim();
+    const userId = document.getElementById('user-id-input').value.trim();
+    const dateSuffix = new Date().toISOString().slice(0, 10);
+    const finalFileName = `${inputName}卡蘑菇_${dateSuffix}` || `${userId}卡蘑菇_${dateSuffix}` || "卡蘑菇時間表_${dateSuffix}";
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), "清單");
+    XLSX.writeFile(wb, finalFileName + ".xlsx");
+}
 
     function importFromExcel(e) {
         const reader = new FileReader();
